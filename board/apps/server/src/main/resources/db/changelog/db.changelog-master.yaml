@@ -1,0 +1,5 @@
+databaseChangeLog:
+  - include:
+      file: db/changelog/00000-create-table-sessions.sql
+  - include:
+      file: db/changelog/00001-create-table-users.yaml
