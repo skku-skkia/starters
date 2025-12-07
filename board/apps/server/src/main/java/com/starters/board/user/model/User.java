@@ -51,10 +51,10 @@ public class User extends BaseEntity {
   private List<OAuthUser> oAuthConnections;
 
   @Column(name = "is_onboarded", nullable = false)
-  private boolean isOnboarded = false;
+  private Boolean isOnboarded = false;
 
   @Column(name = "is_verified", nullable = false)
-  private boolean isVerified = false;
+  private Boolean isVerified = false;
 
   @Column(name = "deleted_at", nullable = true)
   private @Nullable Instant deletedAt;
@@ -70,6 +70,10 @@ public class User extends BaseEntity {
     this.username = username;
     this.password = password;
     this.oAuthConnections = new ArrayList<>();
+  }
+
+  public void onboard() {
+    this.isOnboarded = true;
   }
 
   public void addOAuthConnection(OAuthUser connection) {
