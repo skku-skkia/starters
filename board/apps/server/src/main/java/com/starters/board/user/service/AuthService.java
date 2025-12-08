@@ -28,9 +28,9 @@ public class AuthService {
     }
 
     Authentication authentication =
-        authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(principal, request.password()));
-    authentication = authenticationManager.authenticate(authentication);
+        UsernamePasswordAuthenticationToken.authenticated(
+            principal, request.password(), principal.getAuthorities());
+    authenticationManager.authenticate(authentication);
 
     return authentication;
   }

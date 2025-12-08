@@ -6,6 +6,7 @@ import com.starters.board.user.service.AuthService;
 import com.starters.board.user.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -13,6 +14,7 @@ import org.springframework.security.web.context.HttpSessionSecurityContextReposi
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -26,7 +28,8 @@ class AuthController {
     this.userService = userService;
   }
 
-  @PostMapping("/login")
+  @PostMapping("/auth/login")
+  @ResponseStatus(HttpStatus.OK)
   public void login(HttpServletRequest http, @RequestBody @Validated LoginRequest request) {
     Authentication authentication = authService.authenticate(request);
 
@@ -39,7 +42,7 @@ class AuthController {
         HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, securityContext);
   }
 
-  @PostMapping("/register")
+  @PostMapping("/auth/register")
   public void register(@RequestBody @Validated RegisterRequest request) {
     userService.registerUser(request);
   }

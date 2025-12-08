@@ -3,9 +3,12 @@ package com.starters.board.config;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.FormLoginConfigurer;
@@ -17,6 +20,7 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 
 @Configuration
 @EnableWebSecurity
@@ -28,14 +32,21 @@ public class SecurityConfig {
       HttpSecurity http, OAuth2UserService<OAuth2UserRequest, OAuth2User> oAuth2UserService) {
     return http.authorizeHttpRequests(
             requests -> {
-              requests.requestMatchers("/auth/login").permitAll();
-              requests.requestMatchers("/auth/register").permitAll();
+              requests.requestMatchers(HttpMethod.POST, "/auth/login").permitAll();
+              requests.requestMatchers(HttpMethod.POST, "/auth/register").permitAll();
               requests.anyRequest().authenticated();
             })
+        .csrf(csrf -> csrf.disable())
         .formLogin(FormLoginConfigurer::disable)
+        .logout(logout -> logout.logoutUrl("/auth/logout").deleteCookies("JSESSIONID"))
+        .cors(Customizer.withDefaults())
         .sessionManagement(
             session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
         .oauth2Login(oauth -> oauth.userInfoEndpoint(user -> user.userService(oAuth2UserService)))
+        .exceptionHandling(
+            exception ->
+                exception.authenticationEntryPoint(
+                    new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
         .build();
   }
 
