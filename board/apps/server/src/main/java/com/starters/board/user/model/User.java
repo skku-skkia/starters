@@ -63,6 +63,12 @@ public class User extends BaseEntity {
     this.oAuthConnections = new ArrayList<>();
   }
 
+  public static User reference(String id) {
+    User user = new User();
+    user.id = id;
+    return user;
+  }
+
   @Builder
   public User(Role role, String email, String username, @Nullable String password) {
     this.role = role;

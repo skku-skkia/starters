@@ -17,4 +17,6 @@ public enum Role implements GrantedAuthority {
   public @Nullable String getAuthority() {
     return authority;
   }
+
+  public static final String ADMIN_ROLE = "ROLE_ADMIN";
 }
