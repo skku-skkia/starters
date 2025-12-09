@@ -1,0 +1,33 @@
+import SockJS from "sockjs-client";
+import { Client } from "@stomp/stompjs";
+import env from "./env";
+import { isBrowser } from "./server";
+import logger from "./logger";
+
+let client: Client | null = null;
+
+export function getStompClient(): Client {
+  if (!isBrowser()) {
+    throw new Error("getStompClient can only be called in the browser");
+  }
+
+  if (client) {
+    return client;
+  }
+
+  const url = env.NEXT_PUBLIC_WEBSOCKET_URL;
+
+  client = new Client({
+    webSocketFactory: () => {
+      return new SockJS(url);
+    },
+    debug: (message) => {
+      logger.debug(`[STOMP] ${message}`);
+    },
+    reconnectDelay: 5000,
+    heartbeatIncoming: 4000,
+    heartbeatOutgoing: 4000,
+  });
+
+  return client;
+}
