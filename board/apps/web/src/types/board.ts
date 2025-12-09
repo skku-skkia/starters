@@ -15,3 +15,11 @@ export interface Post {
   isPublic: boolean;
   isCommentingAllowed: boolean;
 }
+
+export interface Comment {
+  id: number;
+  postId: number;
+  authorId: string;
+  content: string;
+  createdAt: string;
+}

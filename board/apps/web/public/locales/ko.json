@@ -74,6 +74,16 @@
         "submit": "등록",
         "login": "이미 계정이 있으신가요? 로그인하세요."
       }
+    },
+    "post": {
+      "back-to-posts": "게시물로 돌아가기",
+      "comments": {
+        "title": "댓글",
+        "disabled": "댓글이 비활성화되었습니다.",
+        "add-comment": {
+          "placeholder": "댓글을 입력하세요."
+        }
+      }
     }
   }
 }
