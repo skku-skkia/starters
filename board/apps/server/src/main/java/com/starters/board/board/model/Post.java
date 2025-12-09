@@ -67,6 +67,12 @@ public class Post extends BaseEntity {
     this.isCommentingAllowed = isCommentingAllowed;
   }
 
+  public static Post reference(Long id) {
+    Post post = new Post();
+    post.id = id;
+    return post;
+  }
+
   public void setTitle(String title) {
     this.title = title;
   }
