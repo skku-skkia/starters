@@ -1,4 +1,11 @@
 {
+  "components": {
+    "profile-dropdown": {
+      "login": "로그인",
+      "admin-dashboard": "관리자 대시보드",
+      "logout": "로그아웃"
+    }
+  },
   "pages": {
     "login": {
       "title": "로그인",

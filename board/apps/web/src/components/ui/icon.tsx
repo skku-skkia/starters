@@ -2,7 +2,16 @@ import { SVGProps } from "react";
 
 type OAuthIcons = "google" | "naver";
 
-export type Icons = "add" | "x" | "write" | "send" | "arrow-left" | OAuthIcons;
+export type Icons =
+  | "add"
+  | "x"
+  | "write"
+  | "send"
+  | "arrow-left"
+  | "logout"
+  | "user"
+  | "user-admin"
+  | OAuthIcons;
 
 type IconProps = {
   icon: Icons;
