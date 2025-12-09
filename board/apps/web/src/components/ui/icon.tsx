@@ -2,7 +2,7 @@ import { SVGProps } from "react";
 
 type OAuthIcons = "google" | "naver";
 
-export type Icons = "add" | OAuthIcons;
+export type Icons = "add" | "x" | "write" | OAuthIcons;
 
 type IconProps = {
   icon: Icons;
@@ -40,18 +40,7 @@ export function Icon({ icon, size }: IconProps) {
   }
 
   switch (icon) {
-    case "google":
-    case "naver":
+    default:
       return <SvgIcon icon={icon} width={dimension} height={dimension} />;
-
-    case "add":
-      return (
-        <SvgIcon
-          icon={icon}
-          width={dimension}
-          height={dimension}
-          fill="currentColor"
-        />
-      );
   }
 }

@@ -1,5 +1,6 @@
 import BoardList from "./_components/BoardList";
 import CreateBoardButton from "./_components/CreateBoardButton";
+import CreatePostButton from "./_components/CreatePostButton";
 
 export default function Admin() {
   return (
@@ -8,7 +9,8 @@ export default function Admin() {
         <div className="flex items-center justify-between mb-4">
           <h1 className="text-xl">Boards</h1>
 
-          <div>
+          <div className="flex items-center gap-2">
+            <CreatePostButton />
             <CreateBoardButton />
           </div>
         </div>
