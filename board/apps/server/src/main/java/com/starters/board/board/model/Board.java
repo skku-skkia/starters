@@ -2,6 +2,7 @@ package com.starters.board.board.model;
 
 import com.starters.board.common.entity.BaseEntity;
 import com.starters.board.user.model.User;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -10,7 +11,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
 import org.jspecify.annotations.Nullable;
@@ -38,6 +41,9 @@ public class Board extends BaseEntity {
   @Column(name = "description", nullable = false, length = 1024)
   private String description;
 
+  @OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE, orphanRemoval = true)
+  private List<Post> posts;
+
   protected Board() {}
 
   @Builder
@@ -46,5 +52,11 @@ public class Board extends BaseEntity {
     this.icon = icon;
     this.title = title;
     this.description = description;
+  }
+
+  public static Board reference(Long id) {
+    Board board = new Board();
+    board.id = id;
+    return board;
   }
 }

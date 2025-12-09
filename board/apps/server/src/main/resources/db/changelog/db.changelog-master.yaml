@@ -5,3 +5,5 @@ databaseChangeLog:
       file: db/changelog/00001-create-table-users.yaml
   - include:
       file: db/changelog/00002-create-table-boards.yaml
+  - include:
+      file: db/changelog/00003-create-table-posts.yaml
