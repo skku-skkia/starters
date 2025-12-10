@@ -37,6 +37,14 @@ export default function ProfileDropdown() {
       },
     },
     {
+      icon: "settings",
+      adminOnly: false,
+      label: t("settings"),
+      action: () => {
+        router.push("/settings");
+      },
+    },
+    {
       icon: "logout",
       adminOnly: false,
       label: t("logout"),

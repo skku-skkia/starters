@@ -20,11 +20,15 @@ export const metadata: Metadata = {
   description: "",
 };
 
+interface RootLayoutProps {
+  modal?: React.ReactNode;
+  children?: React.ReactNode;
+}
+
 export default function RootLayout({
+  modal,
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: Readonly<RootLayoutProps>) {
   return (
     <html lang="en">
       <head>
@@ -35,6 +39,7 @@ export default function RootLayout({
       >
         <AppProvider>
           {children}
+          {modal}
           <Toaster />
         </AppProvider>
       </body>

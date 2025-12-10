@@ -3,7 +3,13 @@
     "profile-dropdown": {
       "login": "로그인",
       "admin-dashboard": "관리자 대시보드",
+      "settings": "설정",
       "logout": "로그아웃"
+    },
+    "modal": {
+      "settings": {
+        "title": "설정"
+      }
     }
   },
   "pages": {
