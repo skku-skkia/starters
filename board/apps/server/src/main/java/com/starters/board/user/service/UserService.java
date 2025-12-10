@@ -5,11 +5,13 @@ import com.starters.board.user.constant.Role;
 import com.starters.board.user.dto.OAuthUserDto;
 import com.starters.board.user.dto.request.RegisterRequest;
 import com.starters.board.user.dto.request.UpdateUserRequest;
+import com.starters.board.user.dto.response.GetUserResponse;
 import com.starters.board.user.dto.response.GetViewerResponse;
 import com.starters.board.user.model.OAuthUser;
 import com.starters.board.user.model.User;
 import com.starters.board.user.repository.UserRepository;
 import com.starters.board.user.util.UserMapper;
+import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -43,6 +45,13 @@ public class UserService implements UserDetailsService {
                 () -> new UsernameNotFoundException("User not found with username: " + username));
 
     return userMapper.toUserPrincipal(user);
+  }
+
+  @Transactional(readOnly = true)
+  public List<GetUserResponse> getAdmins() {
+    return userRepository.findByRole(Role.ADMIN).stream()
+        .map(user -> userMapper.toGetUserResponse(user))
+        .toList();
   }
 
   @Transactional(readOnly = true)

@@ -5,6 +5,7 @@ import com.starters.board.user.constant.Role;
 import java.util.List;
 
 public record GetViewerResponse(
+    String id,
     String email,
     String username,
     Role role,

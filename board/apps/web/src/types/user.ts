@@ -8,8 +8,9 @@ export enum OAuthProvider {
 }
 
 export interface User {
+  id: string;
   email: string;
-  name: string;
+  username: string;
   role: Role;
 }
 
