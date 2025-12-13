@@ -12,11 +12,6 @@ public record UserPrincipal(
     implements UserDetails, OAuth2User {
 
   @Override
-  public boolean isEnabled() {
-    return isVerified;
-  }
-
-  @Override
   public String getName() {
     return email;
   }

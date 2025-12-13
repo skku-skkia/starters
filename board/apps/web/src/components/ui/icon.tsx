@@ -1,6 +1,6 @@
 import { SVGProps } from "react";
 
-type OAuthIcons = "google" | "naver";
+export type OAuthIcons = "google" | "naver";
 
 export type Icons =
   | "add"

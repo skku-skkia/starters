@@ -13,6 +13,7 @@ import { Role } from "@/types/user";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 interface ProfileDropdownItemProps {
   icon: Icons;
@@ -56,7 +57,11 @@ export default function ProfileDropdown() {
   }
 
   if (!user) {
-    return <Button>{t("login")}</Button>;
+    return (
+      <Button>
+        <Link href="/auth/login">{t("login")}</Link>
+      </Button>
+    );
   }
 
   return (

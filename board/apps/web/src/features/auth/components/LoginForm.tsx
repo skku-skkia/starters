@@ -17,13 +17,14 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { MINIMUM_PASSWORD_LENGTH } from "../constants/credentials";
-import { login } from "../api/login";
 import { ErrorCode, handleAppError } from "@/lib/error";
 import { toast } from "sonner";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
+import { useLogin } from "@/lib/auth";
 
 export default function LoginForm() {
   const t = useTranslations("pages.login.form");
+  const router = useRouter();
 
   const LoginFormSchema = z.object({
     email: z
@@ -48,18 +49,20 @@ export default function LoginForm() {
     },
   });
 
+  const { mutate: login } = useLogin();
+
   const onSubmit = async (values: LoginFormValues) => {
-    await login(values)
-      .then(() => {
-        redirect("/app");
-      })
-      .catch((error) => {
+    login(values, {
+      onSuccess: () => {
+        router.push("/app");
+      },
+      onError: (error) =>
         handleAppError(error, {
           [ErrorCode.UNAUTHORIZED]: () => {
             toast.error(t("errors.invalid-credentials"));
           },
-        });
-      });
+        }),
+    });
   };
 
   return (

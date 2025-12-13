@@ -2,7 +2,7 @@ import server from "@/lib/server";
 import { AuthenticatedUser } from "@/types/user";
 import { useQuery } from "@tanstack/react-query";
 
-export function getViewer() {
+export async function getViewer() {
   return server.get<AuthenticatedUser>("users/me").json();
 }
 
