@@ -12,15 +12,14 @@ export default class AppError extends Error {
   }
 }
 
-export function handleAppError(
+export function handleAppError<T = never>(
   error: Error,
-  handlers?: Partial<Record<ErrorCode, () => void>>,
+  handlers?: Partial<Record<ErrorCode, () => T | null>>,
 ) {
   if (error instanceof AppError) {
     const handler = handlers?.[error.code];
     if (handler) {
-      handler();
-      return;
+      return handler();
     }
   }
 

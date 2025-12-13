@@ -16,31 +16,35 @@ export default function BoardList() {
     }
   }, [boards, selectedBoardId, setSelectedBoardId]);
 
+  if (!boards) {
+    return <div>Loading boards...</div>;
+  }
+
+  if (boards.length === 0) {
+    return <div>No boards available.</div>;
+  }
+
   return (
     <>
-      {boards ? (
-        boards.map((board, index) => (
-          <div key={index} className="flex flex-col items-center">
-            <div
-              onClick={() => {
-                setSelectedBoardId(board.id);
-              }}
-              className={cn(
-                "rounded-full bg-accent flex items-center justify-center m-2 inline-block border-2",
-                selectedBoardId === board.id
-                  ? "border-primary"
-                  : "border-transparent",
-              )}
-            >
-              <div className="w-[40px] h-[40px] p-1 flex items-center justify-center">
-                {board.icon}
-              </div>
+      {boards.map((board, index) => (
+        <div key={index} className="flex flex-col items-center">
+          <div
+            onClick={() => {
+              setSelectedBoardId(board.id);
+            }}
+            className={cn(
+              "rounded-full bg-accent flex items-center justify-center m-2 inline-block border-2",
+              selectedBoardId === board.id
+                ? "border-primary"
+                : "border-transparent",
+            )}
+          >
+            <div className="w-[40px] h-[40px] p-1 flex items-center justify-center">
+              {board.icon}
             </div>
           </div>
-        ))
-      ) : (
-        <div>Loading boards...</div>
-      )}
+        </div>
+      ))}
     </>
   );
 }
