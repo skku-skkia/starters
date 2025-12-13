@@ -68,6 +68,11 @@ public class UserService implements UserDetailsService {
   }
 
   @Transactional(readOnly = true)
+  public User getUserById(String userId) {
+    return userRepository.findById(userId).orElseThrow();
+  }
+
+  @Transactional(readOnly = true)
   public GetViewerResponse getViewer(String userId) {
     User user = userRepository.findById(userId).orElseThrow();
     return userMapper.toGetViewerResponse(user);

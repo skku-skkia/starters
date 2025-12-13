@@ -9,7 +9,11 @@ export interface Post {
   id: number;
   title: string;
   content: string | null;
-  authorId: string;
+  author: {
+    id: string;
+    email: string;
+    username: string;
+  };
   boardId: number;
   likes: number;
   isPublic: boolean;
@@ -19,7 +23,11 @@ export interface Post {
 export interface Comment {
   id: number;
   postId: number;
-  authorId: string;
+  author: {
+    id: string;
+    email: string;
+    username: string;
+  };
   content: string;
   createdAt: string;
 }

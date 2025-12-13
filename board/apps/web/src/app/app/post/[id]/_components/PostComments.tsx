@@ -100,6 +100,9 @@ export default function PostComments({ id }: PostCommentsProps) {
       <ScrollArea className="h-80">
         {comments?.map((comment) => (
           <div key={comment.id} className="border-b border-gray-200 py-2">
+            <div>
+              <span className="font-semibold">{comment.author.username}</span>
+            </div>
             <p className="text-sm">{comment.content}</p>
             <span className="text-xs text-gray-500">
               {new Date(comment.createdAt).toLocaleString()}

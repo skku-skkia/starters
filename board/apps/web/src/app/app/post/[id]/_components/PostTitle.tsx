@@ -16,8 +16,7 @@ export default function PostTitle({ id }: PostTitleProps) {
   return (
     <div>
       <h1 className="text-3xl">{post.title}</h1>
-
-      <span className="text-sm">{post.authorId}</span>
+      <span className="text-sm">{post.author.username}</span>
     </div>
   );
 }

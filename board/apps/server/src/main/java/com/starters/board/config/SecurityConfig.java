@@ -37,6 +37,8 @@ public class SecurityConfig {
       @Value("oauth2.success.redirect-url") String oauth2SuccessRedirectUrl) {
     return http.authorizeHttpRequests(
             requests -> {
+              requests.requestMatchers(HttpMethod.GET, "/boards").permitAll();
+
               requests.requestMatchers(HttpMethod.POST, "/auth/login").permitAll();
               requests.requestMatchers(HttpMethod.POST, "/auth/register").permitAll();
 

@@ -6,9 +6,12 @@ public record GetPostResponse(
     Long id,
     String title,
     String content,
-    String authorId,
+    Author author,
     long boardId,
     long likes,
     boolean isPublic,
     boolean isCommentingAllowed,
-    Instant createdAt) {}
+    Instant createdAt) {
+
+  public static record Author(String id, String email, String username) {}
+}
