@@ -7,8 +7,14 @@ import org.jspecify.annotations.Nullable;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
-public record UserPrincipal(String id, Role role, String email, @Nullable String password)
+public record UserPrincipal(
+    String id, Role role, String email, @Nullable String password, boolean isVerified)
     implements UserDetails, OAuth2User {
+
+  @Override
+  public boolean isEnabled() {
+    return isVerified;
+  }
 
   @Override
   public String getName() {

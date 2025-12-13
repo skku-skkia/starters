@@ -1,0 +1,42 @@
+databaseChangeLog:
+  - changeSet:
+      id: 00005-1
+      author: Hyoungjoo
+      preConditions:
+        - onFail: CONTINUE
+          not:
+            tableExists:
+              tableName: user_verifications
+      changes:
+        - createTable:
+            tableName: user_verifications
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: CHAR(36)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: code
+                  type: VARCHAR(64)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: expiration_time
+                  type: VARCHAR(64)
+                  constraints:
+                    nullable: false
+
+        - addForeignKeyConstraint:
+            baseTableName: user_verifications
+            baseColumnNames: user_id
+            referencedTableName: users
+            referencedColumnNames: id
+            constraintName: fk_user_verifications_user_id_users_id

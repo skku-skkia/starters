@@ -3,6 +3,7 @@ package com.starters.board.user.service;
 import com.starters.board.common.auth.dto.UserPrincipal;
 import com.starters.board.user.constant.Role;
 import com.starters.board.user.dto.OAuthUserDto;
+import com.starters.board.user.dto.event.UserRegisteredEvent;
 import com.starters.board.user.dto.request.RegisterRequest;
 import com.starters.board.user.dto.request.UpdateUserRequest;
 import com.starters.board.user.dto.response.GetUserResponse;
@@ -14,6 +15,7 @@ import com.starters.board.user.util.UserMapper;
 import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -27,12 +29,17 @@ public class UserService implements UserDetailsService {
   private final UserRepository userRepository;
   private final UserMapper userMapper;
   private final PasswordEncoder passwordEncoder;
+  private final ApplicationEventPublisher eventPublisher;
 
   public UserService(
-      UserRepository userRepository, UserMapper userMapper, PasswordEncoder passwordEncoder) {
+      UserRepository userRepository,
+      UserMapper userMapper,
+      PasswordEncoder passwordEncoder,
+      ApplicationEventPublisher eventPublisher) {
     this.userRepository = userRepository;
     this.userMapper = userMapper;
     this.passwordEncoder = passwordEncoder;
+    this.eventPublisher = eventPublisher;
   }
 
   @Override
@@ -52,6 +59,12 @@ public class UserService implements UserDetailsService {
     return userRepository.findByRole(Role.ADMIN).stream()
         .map(user -> userMapper.toGetUserResponse(user))
         .toList();
+  }
+
+  @Transactional(readOnly = true)
+  public UserPrincipal loadUserById(String userId) {
+    User user = userRepository.findById(userId).orElseThrow();
+    return userMapper.toUserPrincipal(user);
   }
 
   @Transactional(readOnly = true)
@@ -76,6 +89,7 @@ public class UserService implements UserDetailsService {
     user = userRepository.save(user);
     log.debug("{} user registered with email {}", role.name(), user.getEmail());
 
+    eventPublisher.publishEvent(new UserRegisteredEvent(user.getId()));
     return user;
   }
 

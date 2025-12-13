@@ -34,4 +34,12 @@ public class AuthService {
 
     return authentication;
   }
+
+  @Transactional(readOnly = true)
+  public Authentication refresh(String userId) {
+    UserPrincipal principal = userService.loadUserById(userId);
+
+    return UsernamePasswordAuthenticationToken.authenticated(
+        principal, principal.password(), principal.getAuthorities());
+  }
 }

@@ -1,6 +1,8 @@
 package com.starters.board.config;
 
+import com.starters.board.common.auth.service.UserVerificationAuthorizationManager;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -29,12 +31,22 @@ public class SecurityConfig {
 
   @Bean
   public SecurityFilterChain securityFilterChain(
-      HttpSecurity http, OAuth2UserService<OAuth2UserRequest, OAuth2User> oAuth2UserService) {
+      HttpSecurity http,
+      OAuth2UserService<OAuth2UserRequest, OAuth2User> oAuth2UserService,
+      UserVerificationAuthorizationManager userVerificationAuthorizationManager,
+      @Value("oauth2.success.redirect-url") String oauth2SuccessRedirectUrl) {
     return http.authorizeHttpRequests(
             requests -> {
               requests.requestMatchers(HttpMethod.POST, "/auth/login").permitAll();
               requests.requestMatchers(HttpMethod.POST, "/auth/register").permitAll();
-              requests.anyRequest().authenticated();
+
+              requests.requestMatchers(HttpMethod.GET, "/users/me").authenticated();
+              requests.requestMatchers(HttpMethod.PATCH, "/users/me").authenticated();
+
+              requests.requestMatchers(HttpMethod.POST, "/verify-email").permitAll();
+              requests.requestMatchers(HttpMethod.POST, "/verify-email/resend").authenticated();
+
+              requests.anyRequest().access(userVerificationAuthorizationManager);
             })
         .csrf(csrf -> csrf.disable())
         .formLogin(FormLoginConfigurer::disable)
@@ -42,7 +54,15 @@ public class SecurityConfig {
         .cors(Customizer.withDefaults())
         .sessionManagement(
             session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
-        .oauth2Login(oauth -> oauth.userInfoEndpoint(user -> user.userService(oAuth2UserService)))
+        .oauth2Login(
+            oauth ->
+                oauth
+                    .userInfoEndpoint(user -> user.userService(oAuth2UserService))
+                    .successHandler(
+                        (request, response, authentication) -> {
+                          response.setStatus(HttpStatus.OK.value());
+                          response.sendRedirect("http://localhost:3000/auth/oauth2/redirect");
+                        }))
         .exceptionHandling(
             exception ->
                 exception.authenticationEntryPoint(

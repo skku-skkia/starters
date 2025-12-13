@@ -9,3 +9,5 @@ databaseChangeLog:
       file: db/changelog/00003-create-table-posts.yaml
   - include:
       file: db/changelog/00004-create-table-comments.yaml
+  - include:
+      file: db/changelog/00005-create-table-user-verification.yaml

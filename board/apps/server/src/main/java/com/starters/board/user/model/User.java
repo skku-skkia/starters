@@ -85,4 +85,8 @@ public class User extends BaseEntity {
   public void addOAuthConnection(OAuthUser connection) {
     this.oAuthConnections.add(connection);
   }
+
+  public void verifyEmail() {
+    this.isVerified = true;
+  }
 }
