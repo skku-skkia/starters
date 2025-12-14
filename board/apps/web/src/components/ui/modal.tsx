@@ -86,6 +86,7 @@ export function Modal({
               ref={modalRef}
               className={cn(
                 "fixed z-50 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-neutral-900 rounded-lg shadow-lg p-6 ",
+                "flex flex-col",
                 modalClassName,
               )}
               style={{
@@ -118,30 +119,25 @@ export function Modal({
   );
 }
 
-interface ModalCloseButtonProps {
-  className?: string;
-}
-
-export function ModalCloseButton({ className }: ModalCloseButtonProps) {
+export function ModalHeader({
+  className,
+  children,
+  ...props
+}: React.ComponentProps<"div">) {
   const { onClose } = useModalContext();
 
   return (
-    <Button
-      onClick={onClose}
-      variant="ghost"
-      className={cn("absolute top-4 right-4 p-2", className)}
-    >
-      <Icon icon="x" />
-    </Button>
-  );
-}
+    <div className={cn("mb-4 text-lg font-semibold", className)} {...props}>
+      {children}
 
-export function ModalHeader({
-  className,
-  ...props
-}: React.ComponentProps<"div">) {
-  return (
-    <div className={cn("mb-4 text-lg font-semibold", className)} {...props} />
+      <Button
+        onClick={onClose}
+        variant="ghost"
+        className={cn("absolute top-4 right-4 p-2", className)}
+      >
+        <Icon icon="x" />
+      </Button>
+    </div>
   );
 }
 

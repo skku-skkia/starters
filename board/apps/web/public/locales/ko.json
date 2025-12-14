@@ -8,7 +8,18 @@
     },
     "modal": {
       "settings": {
-        "title": "설정"
+        "title": "설정",
+        "categories": {
+          "account": {
+            "title": "계정",
+            "name": "이름"
+          },
+          "general": {
+            "title": "일반"
+          }
+        },
+        "cancel": "취소",
+        "save": "저장"
       }
     }
   },
