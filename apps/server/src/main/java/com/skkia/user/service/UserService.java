@@ -1,0 +1,137 @@
+package com.skkia.user.service;
+
+import com.skkia.common.auth.dto.UserPrincipal;
+import com.skkia.user.constant.Role;
+import com.skkia.user.dto.OAuthUserDto;
+import com.skkia.user.dto.event.UserRegisteredEvent;
+import com.skkia.user.dto.request.RegisterRequest;
+import com.skkia.user.dto.request.UpdateUserRequest;
+import com.skkia.user.dto.response.GetUserResponse;
+import com.skkia.user.dto.response.GetViewerResponse;
+import com.skkia.user.model.OAuthUser;
+import com.skkia.user.model.User;
+import com.skkia.user.repository.UserRepository;
+import com.skkia.user.util.UserMapper;
+import java.util.List;
+import java.util.Optional;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+@Service
+@Slf4j
+public class UserService implements UserDetailsService {
+
+  private final UserRepository userRepository;
+  private final UserMapper userMapper;
+  private final PasswordEncoder passwordEncoder;
+  private final ApplicationEventPublisher eventPublisher;
+
+  public UserService(
+      UserRepository userRepository,
+      UserMapper userMapper,
+      PasswordEncoder passwordEncoder,
+      ApplicationEventPublisher eventPublisher) {
+    this.userRepository = userRepository;
+    this.userMapper = userMapper;
+    this.passwordEncoder = passwordEncoder;
+    this.eventPublisher = eventPublisher;
+  }
+
+  @Override
+  @Transactional(readOnly = true)
+  public UserPrincipal loadUserByUsername(String username) throws UsernameNotFoundException {
+    User user =
+        userRepository
+            .findByEmail(username)
+            .orElseThrow(
+                () -> new UsernameNotFoundException("User not found with username: " + username));
+
+    return userMapper.toUserPrincipal(user);
+  }
+
+  @Transactional(readOnly = true)
+  public List<GetUserResponse> getAdmins() {
+    return userRepository.findByRole(Role.ADMIN).stream()
+        .map(user -> userMapper.toGetUserResponse(user))
+        .toList();
+  }
+
+  @Transactional(readOnly = true)
+  public UserPrincipal loadUserById(String userId) {
+    User user = userRepository.findById(userId).orElseThrow();
+    return userMapper.toUserPrincipal(user);
+  }
+
+  @Transactional(readOnly = true)
+  public User getUserById(String userId) {
+    return userRepository.findById(userId).orElseThrow();
+  }
+
+  @Transactional(readOnly = true)
+  public GetViewerResponse getViewer(String userId) {
+    User user = userRepository.findById(userId).orElseThrow();
+    return userMapper.toGetViewerResponse(user);
+  }
+
+  @Transactional
+  public User registerUser(RegisterRequest request) {
+    Role role = (userRepository.count() == 0) ? Role.ADMIN : Role.USER;
+    String encodedPassword = passwordEncoder.encode(request.password());
+
+    User user =
+        User.builder()
+            .role(role)
+            .email(request.email())
+            .username(request.username())
+            .password(encodedPassword)
+            .build();
+
+    user = userRepository.save(user);
+    log.debug("{} user registered with email {}", role.name(), user.getEmail());
+
+    eventPublisher.publishEvent(new UserRegisteredEvent(user.getId()));
+    return user;
+  }
+
+  @Transactional
+  public UserPrincipal getOrRegisterOAuthUser(OAuthUserDto oAuthUser) {
+    Optional<User> existingUser = userRepository.findByEmail(oAuthUser.email());
+
+    User user;
+    if (existingUser.isPresent()) {
+      user = existingUser.get();
+    } else {
+      user = registerUser(new RegisterRequest(oAuthUser.email(), oAuthUser.name(), null));
+    }
+
+    if (user.getOAuthConnections().stream()
+        .noneMatch(c -> c.getProvider() == oAuthUser.provider())) {
+      user.addOAuthConnection(
+          OAuthUser.builder().user(user).provider(oAuthUser.provider()).build());
+    }
+
+    user = userRepository.save(user);
+
+    return userMapper.toUserPrincipal(user);
+  }
+
+  @Transactional
+  public void updateUser(String userId, UpdateUserRequest request) {
+    User user = userRepository.findById(userId).orElseThrow();
+
+    if (request.username() != null) {
+      user.setUsername(request.username());
+    }
+
+    if (request.isOnboarded() == true) {
+      user.onboard();
+    }
+
+    userRepository.save(user);
+  }
+}
