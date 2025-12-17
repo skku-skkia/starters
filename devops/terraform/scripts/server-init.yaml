@@ -1,0 +1,15 @@
+start_server:
+  - path: /etc/systemd/system/cloudservice.service
+    permissions: "0644"
+    owner: root
+    content: |
+      [Unit]
+      Description=Start server
+
+      [Service]
+      ExecStart=/usr/bin/docker run --rm -v us-central1-docker.pkg.dev/project-7631342c-9ec4-4554-963/docker/server:latest
+      ExecStop=/usr/bin/docker stop server
+
+runcmd:
+  - systemctl daemon-reload
+  - systemctl start cloudservice.service
