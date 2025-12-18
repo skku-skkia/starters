@@ -16,5 +16,7 @@ variable "api" {
     "logging.googleapis.com",
     "secretmanager.googleapis.com",
     "servicenetworking.googleapis.com",
+    "run.googleapis.com",
+    "cloudbuild.googleapis.com",
   ]
 }
