@@ -1,16 +1,16 @@
-import pino from "pino";
-
-const logger = pino({
-  level: process.env.NODE_ENV === "development" ? "debug" : "warn",
-  browser: {
-    write: (o) => {
-      const { msg } = o as Record<string, string>;
-
-      if (process.env.NODE_ENV === "development") {
-        console.log(`${msg}`);
-      }
-    },
+const logger = {
+  debug: (msg: string) => {
+    console.log(`DEBUG: ${msg}`);
   },
-});
+  warn: (msg: string) => {
+    console.warn(`WARN: ${msg}`);
+  },
+  info: (msg: string) => {
+    console.info(`INFO: ${msg}`);
+  },
+  error: (msg: string) => {
+    console.error(`ERROR: ${msg}`);
+  },
+};
 
 export default logger;
