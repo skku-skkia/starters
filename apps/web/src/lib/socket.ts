@@ -15,7 +15,7 @@ export function getStompClient(): Client {
     return client;
   }
 
-  const url = env.NEXT_PUBLIC_WEBSOCKET_URL;
+  const url = env.NEXT_PUBLIC_BACKEND_URL + "/ws";
 
   client = new Client({
     webSocketFactory: () => {
