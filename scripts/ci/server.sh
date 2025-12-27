@@ -6,4 +6,4 @@ source .envrc
 
 cd apps/server
 
-./gradlew build -x test
+./gradlew build
