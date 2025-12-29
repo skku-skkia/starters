@@ -8,6 +8,7 @@ import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -24,6 +25,7 @@ public class EmailService {
     this.javaMailSender = javaMailSender;
   }
 
+  @Async
   @Retryable(
       retryFor = {MessagingException.class, MailException.class},
       backoff = @Backoff(delay = 3000),
