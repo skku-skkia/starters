@@ -42,10 +42,8 @@ export default function App() {
 
       <div className="flex flex-col h-full pb-4">
         <div>
-          <h1 className="text-xl">{board ? board.title : "Select a board"}</h1>
-          <span>
-            {board ? board.description : "Please select a board to view posts."}
-          </span>
+          <h1 className="text-xl">{board && board.title}</h1>
+          <span>{board && board.description}</span>
         </div>
 
         <div className="grow">

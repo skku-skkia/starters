@@ -4,8 +4,12 @@ import { cn } from "@/lib/utils";
 import { useBoards } from "@/features/board/api/get-boards";
 import { useEffect } from "react";
 import { useBoardStoreActions, useSelectedBoardId } from "@/store/board";
+import { Spinner } from "@/components/ui/spinner";
+import { useTranslations } from "next-intl";
 
 export default function BoardList() {
+  const t = useTranslations("pages.home");
+
   const { data: boards } = useBoards();
   const selectedBoardId = useSelectedBoardId();
   const { setSelectedBoardId } = useBoardStoreActions();
@@ -16,12 +20,12 @@ export default function BoardList() {
     }
   }, [boards, selectedBoardId, setSelectedBoardId]);
 
-  if (!boards) {
-    return <div>Loading boards...</div>;
-  }
-
-  if (boards.length === 0) {
-    return <div>No boards available.</div>;
+  if (!boards || boards.length === 0) {
+    return (
+      <div className="w-full flex items-center justify-center">
+        {boards === undefined ? <Spinner /> : t("boards.no-boards")}
+      </div>
+    );
   }
 
   return (

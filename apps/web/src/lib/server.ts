@@ -20,7 +20,15 @@ export function url(
     );
 
   const queryString = new URLSearchParams(
-    filteredParams as Record<string, string>,
+    Object.entries(filteredParams || {}).reduce(
+      (params: Record<string, string>, [key, value]) => {
+        if (value !== undefined && value !== null) {
+          params[key] = String(value);
+        }
+        return params;
+      },
+      {},
+    ),
   ).toString();
 
   return `${base}?${queryString}`;
@@ -48,9 +56,11 @@ const server = ky.create({
     limit: 3,
     shouldRetry: ({ error, retryCount }) => {
       if (error instanceof AppError) {
+        logger.debug("Received AppError, will not retry.");
         return false;
       }
 
+      logger.debug(`Retry attempt #${retryCount}`);
       return retryCount < 3;
     },
   },
@@ -61,11 +71,14 @@ const server = ky.create({
       },
       async (request) => {
         if (!isBrowser()) {
-          await getServerCookies().then((cookies) => {
+          try {
+            const cookies = await getServerCookies();
             if (cookies) {
               request.headers.set("Cookie", cookies);
             }
-          });
+          } catch (error) {
+            logger.error("Failed to set cookies: " + error);
+          }
         }
       },
     ],
@@ -78,7 +91,7 @@ const server = ky.create({
     ],
     beforeError: [
       (error) => {
-        logger.error(`Error: ${error.message}`);
+        logger.debug(`Error: ${error.message}`);
 
         if (error instanceof HTTPError) {
           const {
@@ -86,8 +99,11 @@ const server = ky.create({
           } = error;
 
           if (status === 401) {
+            logger.debug("Unauthorized error detected, throwing AppError.");
             throw new AppError(ErrorCode.UNAUTHORIZED);
           }
+
+          // TODO: Need to handle other custom errors from backend
         }
 
         return error;
