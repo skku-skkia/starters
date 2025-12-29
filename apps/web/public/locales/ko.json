@@ -24,6 +24,17 @@
     }
   },
   "pages": {
+    "about": {
+      "navigation": {
+        "projects": "projects",
+        "members": "members",
+        "contact": "contact",
+        "apply": "apply"
+      },
+      "apply": {
+        "title": "지금 바로 지원하기"
+      }
+    },
     "login": {
       "title": "로그인",
       "description": "계정에 로그인하세요.",
