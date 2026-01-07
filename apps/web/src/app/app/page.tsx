@@ -57,36 +57,38 @@ export default function App() {
             ))}
         </div>
 
-        <Pagination>
-          <PaginationContent>
-            <PaginationItem>
-              <PaginationPrevious
-                href="#"
-                onClick={() => {
-                  setPage((page) => (page === 0 ? 0 : page - 1));
-                }}
-              />
-            </PaginationItem>
+        {posts && posts.length > 0 && (
+          <Pagination>
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious
+                  href="#"
+                  onClick={() => {
+                    setPage((page) => (page === 0 ? 0 : page - 1));
+                  }}
+                />
+              </PaginationItem>
 
-            <PaginationItem>
-              <PaginationLink href="#">{page + 1}</PaginationLink>
-            </PaginationItem>
+              <PaginationItem>
+                <PaginationLink href="#">{page + 1}</PaginationLink>
+              </PaginationItem>
 
-            <PaginationItem>
-              <PaginationNext
-                href="#"
-                onClick={() =>
-                  setPage((page) =>
-                    posts && (page + 1) * 10 < posts.page.totalElements
-                      ? page + 1
-                      : page,
-                  )
-                }
-                isActive={posts && (page + 1) * 10 < posts.page.totalElements}
-              />
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
+              <PaginationItem>
+                <PaginationNext
+                  href="#"
+                  onClick={() =>
+                    setPage((page) =>
+                      posts && (page + 1) * 10 < posts.page.totalElements
+                        ? page + 1
+                        : page,
+                    )
+                  }
+                  isActive={posts && (page + 1) * 10 < posts.page.totalElements}
+                />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
+        )}
       </div>
     </AuthProvider>
   );
